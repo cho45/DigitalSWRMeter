@@ -1,0 +1,15 @@
+{
+	"name": "avr-utils",
+	"version": "0.0.1",
+	"repo": "cho45/avr-utils",
+	"description": "AVR Utility",
+	"keywords": ["avr", "ringbuffer", "i2c", "twi"],
+	"license": "MIT",
+	"src": [
+		"ringbuffer/ringbuffer.h",
+		"ringbuffer/ringbuffer_256.h",
+		"i2c/i2c.h",
+		"uart/uart.h",
+		"log/log.h"
+	]
+}

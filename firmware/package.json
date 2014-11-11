@@ -1,0 +1,10 @@
+{ 
+  "name": "MLController",
+  "version": "1.0.0",
+  "repo": "cho45/MLController",
+  "dependencies": {
+    "cho45/avr-utils": "*"
+  },
+  "install": "make"
+}
+
