@@ -228,11 +228,10 @@ int main(void) {
 	display_write_data(1, "0123456789abcdef");
 	display_write_data(2, "0123456789abcdef");
 
-	float v_fwd, v_ref;
-	float p_fwd, p_ref;
-	float reflection_coefficient, swr;
+	float v_fwd = 0, v_ref = 0;
+	float p_fwd = 0, p_ref = 0;
+	float reflection_coefficient = 0, swr = 0;
 	char buf[32];
-	int i;
 	for (;;) {
 		do_adc(&v_fwd, &v_ref);
 		v_fwd = v_fwd * ADC_RES;
@@ -285,14 +284,23 @@ int main(void) {
 		}
 
 		if (serial_gets_async(13, buf, 32)) {
-			serial_puts(buf);
-			if (strncmp(buf, "SWR", 3) == 0) {
-				sprintf(buf, "%.1f", max.swr);
+			if (strncmp(buf, "MAX", 3) == 0) {
+				sprintf(buf, "%.3fW %.3fW %.3f", max.p_fwd, max.p_ref, max.swr);
+				serial_puts(buf);
+			} else
+			if (strncmp(buf, "NOW", 3) == 0) {
+				sprintf(buf, "%.3fW %.3fW %.3f", p_fwd, p_ref, swr);
 				serial_puts(buf);
 			} else
 			if (strncmp(buf, "CAL", 3) == 0) {
-				mode = MODE_CALIB;
+				if (mode == MODE_CALIB) {
+					mode = MODE_NORMAL;
+				} else {
+					mode = MODE_CALIB;
+				}
 				serial_puts("CAL");
+			} else {
+				serial_puts("?");
 			}
 		}
 
