@@ -176,6 +176,8 @@ ISR(TIMER0_COMPA_vect) {
 }
 
 static inline void setup_io () {
+	wdt_enable(WDTO_1S);
+
 	/**
 	 * Data Direction Register: 0=input, 1=output
 	 * 必要なポートだけインプットポートにする。
@@ -209,11 +211,10 @@ static inline void setup_io () {
 	ringbuffer_init(&read_ring, read_data, 32);
 
 	serial_init(9600, &write_ring, &read_ring);
-	serial_puts("Initialized");
+	i2c_set_bitrate(10);
 
 	sei();
-
-	i2c_set_bitrate(10);
+	serial_puts("Initialized");
 }
 
 int main(void) {
@@ -225,14 +226,16 @@ int main(void) {
 	_delay_us(60);
 	display_write_instruction(0b00000001); // clear display
 	_delay_ms(3);
-	display_write_data(1, "0123456789abcdef");
-	display_write_data(2, "0123456789abcdef");
+	display_write_data(1, "Initialized.....");
+	display_write_data(2, "Waiting.........");
 
 	float v_fwd = 0, v_ref = 0;
 	float p_fwd = 0, p_ref = 0;
 	float reflection_coefficient = 0, swr = 0;
 	char buf[32];
 	for (;;) {
+		wdt_reset();
+
 		do_adc(&v_fwd, &v_ref);
 		v_fwd = v_fwd * ADC_RES;
 		v_ref = v_ref * ADC_RES;
